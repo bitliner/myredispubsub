@@ -1,0 +1,18 @@
+<html>
+<head>
+	<title>
+
+	</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+	var host = window.location.host.split(':')[0];
+		var socket = io.connect('http://' + host);
+		socket.on('messages',function(msg){
+			console.log(msg);
+		})
+	</script>
+</head>
+<body>
+Saluti!
+</body>
+</html>
