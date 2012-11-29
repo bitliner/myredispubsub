@@ -7,8 +7,11 @@
 	<script type="text/javascript">
 	var host = window.location.host.split(':')[0];
 		var socket = io.connect('http://' + host);
-		socket.on('messages',function(msg){
-			console.log(msg);
+		socket.on('chat',function(msg){
+			console.log('222',msg);
+		})
+		socket.on('message',function(msg){
+			console.log('1',msg);
 		})
 	</script>
 </head>

@@ -37,24 +37,34 @@
  });
 
 
-var io = require('socket.io').listen(server);
-var pub = redis.createClient();
+ var io = require('socket.io').listen(server);
+ var pub = redis.createClient();
+
+ var Client=function(){
+ 	this.sub = redis.createClient();
+ }
+ Client.prototype.subscribe = function(socket) {
+ 	this.sub.on('message', function(channel, message) {
+ 		socket.emit(channel, message);
+ 		socket.send('fuckkk!!')
+ 		console.log('ciao_sock',socket.id);
+ 	});
+ 	var current = this;
+ 	this.sub.on('subscribe', function(channel, count) {});
+ 	this.sub.subscribe('chat');
+ };
+
 
 // Socket handler
 io.sockets.on("connection", function(socket) {
-	console.log('connecteed');
-  
-  var sub = redis.createClient();
-  
-  sub.subscribe("messages");
-  sub.on("message", function(channel, message) {
-  	console.log('message',message);
-    socket.emit(channel,message);
-  });
 
-  socket.on("disconnect", function() {
-    sub.unsubscribe("messages");
-    sub.quit();
-  });
+	var c=new Client()
+	c.subscribe(socket)
+
+	console.log('sock',socket.id);
+	pub.publish("chat", 'ola!');
+
+
+
 });
-pub.publish("messages", JSON.stringify({type: "foo", content: "bar"}));
+
